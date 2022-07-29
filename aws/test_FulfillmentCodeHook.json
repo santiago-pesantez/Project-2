@@ -1,0 +1,21 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "FulfillmentCodeHook",
+  "userId": "travispeska",
+  "sessionAttributes": {},
+  "bot": {
+    "name": "fb_page",
+    "alias": "$LATEST",
+    "version": "$LATEST"
+  },
+  "outputDialogMode": "Text",
+  "currentIntent": {
+    "name": "Main",
+    "slots": {
+      "ticker": "BTC",
+      "forecast": 30,
+      "amount": 100
+    },
+    "confirmationStatus": "None"
+  }
+}
