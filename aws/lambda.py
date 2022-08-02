@@ -54,7 +54,7 @@ def get_fg_index():
     response = requests.get(fgi_url)
     response_json = response.json()
     fg_index = parse_float(response_json["data"][0]["value"])
-    return fg_index 
+    return fg_index
 
 def get_date_and_price(alpaca_ticker, forecast_days):
     '''
@@ -62,7 +62,7 @@ def get_date_and_price(alpaca_ticker, forecast_days):
     '''
     predicted_price = 100000
     future_date = "2023-10-21"
-    return {future_date, predicted_price}
+    return future_date, predicted_price
 
 def calculate_gains(alpaca_ticker, dollars, future_price):
     '''
@@ -83,7 +83,7 @@ def get_recommendation(ticker, dollars, forecast):
     """
     Returns a buying recommendation based on the value of the ticker, and the model's prediction.
     """
-    
+
     alpaca_ticker = parse_ticker_to_alpaca(ticker)
     future_date, future_price = get_date_and_price(alpaca_ticker, forecast)
     predicted_gains = calculate_gains(alpaca_ticker, dollars, future_price)
@@ -227,7 +227,7 @@ def make_prediction(intent_request):
         return delegate(output_session_attributes, get_slots(intent_request))
 
     # Get the current price of the ticker in dollars and make the conversion from dollars to ticker.
-    
+
     dollars_parsed = parse_float(dollars)
     forecast_parsed = parse_float(forecast)
     alpaca_ticker = parse_ticker_to_alpaca(ticker)
