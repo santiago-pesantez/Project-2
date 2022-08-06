@@ -62,14 +62,16 @@ def get_pd_from_twitter(ticker, n):
     
     return tweets_df
     
-def main():
+def main(user_ticker):
     # Read from input
-    ticker = input("Please enter a crypto ticker: #")
-    n = input("How many tweets do you want to retrieve?: ")
+    ticker = user_ticker
+    n = 10000
 
     tweets_df = get_pd_from_twitter(ticker, n)
 
+    return tweets_df
+
     # Create a CSV file froim the tweets_df
-    print('Creating a CSV file...')
-    tweets_df.to_csv('twitter_data.csv', index=False)
-    print('CSV file created.')
+    # print('Creating a CSV file...')
+    # tweets_df.to_csv('twitter_data.csv', index=False)
+    # print('CSV file created.')

@@ -1,4 +1,4 @@
-def forecaster(): # TODO Decide whether code will load a csv or be given parameter 
+def forecaster(user_ticker, days_out): # TODO Decide whether code will load a csv or be given parameter 
 
     # importing libraries and dependecies
     import pandas as pd
@@ -8,6 +8,7 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
     import os
     from dotenv import load_dotenv
     import alpaca_trade_api as tradeapi
+    import sentiment
 
     # Pulling Api Keys and creating environment
     load_dotenv()
@@ -19,18 +20,14 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
         api_version='v2'
     )
 
-    # Reading tweet sentiment from csv created by twf_v2
-    tweets_df = pd.read_csv(
-        Path('stock_market_crash_2022.csv'),
-        index_col='created_at',
-        infer_datetime_format=True,
-        parse_dates=True
-    )
+    # calling sentiment function
+    tweets_df = sentiment.main(user_ticker=user_ticker)
+    tweets_df.set_index('created_at', inplace=True)
     tweets_df.index = tweets_df.index.date
 
     # creating dataframe including sentiment from tweets
     sentiment_df = pd.DataFrame()
-    sentiment_df['sentiment'] = tweets_df[['text_sentiment']]
+    sentiment_df['sentiment'] = tweets_df[['sentiment_label']]
 
     # Encoding sentiment
     sentiment_ordering = ['Negative', 'Neutral', 'Positive']
@@ -44,7 +41,7 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
     sentiment_data = sentiment_df.reset_index()[['date', 'sentiment']].rename({'date':'ds','sentiment':'y'},axis='columns')
     sentiment_model = Prophet(yearly_seasonality=True,daily_seasonality=True)
     sentiment_model.fit(sentiment_data)
-    future = sentiment_model.make_future_dataframe(periods=60, freq='d')
+    future = sentiment_model.make_future_dataframe(periods=days_out, freq='d')
     sentiment_forecast = sentiment_model.predict(future)
 
     # Creating dataframe from forecast to be used in the future
@@ -53,7 +50,7 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
     sentiment_predicted['sentiment'] = sentiment_forecast['yhat'].loc[((sentiment_data.index.max() +1)):(future.index.max())]
 
     # Setting variables for crypto API, then pulling and formatting data
-    ticker = 'BTCUSD'
+    ticker = user_ticker
     start_date = sentiment_data['ds'].min()
     end_date = sentiment_data['ds'].max()
     timeframe = '1Day'
@@ -69,7 +66,7 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
     crypto_df.index = crypto_df.index.date
     # Creating features dataframe for price forecaster
     features_df = pd.concat([sentiment_df, crypto_df], axis=1).reset_index()[['index', 'sentiment', 'close']].rename({'index':'ds','close':'y','sentiment':'sentiment'},axis='columns')
-
+    
     # Creating price model
     price_model = Prophet(yearly_seasonality=True,daily_seasonality=True)
     price_model.add_regressor('sentiment')
@@ -85,7 +82,7 @@ def forecaster(): # TODO Decide whether code will load a csv or be given paramet
     print(final_price)
     print(starting_price)
 
-    # # Returning needed variables
-    # return starting_price, final_price
+    # Returning needed variables
+    return starting_price, final_price
 
-forecaster()
+# forecaster(user_ticker='BTCUSD', days_out=60)
