@@ -4,11 +4,11 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from botocore.vendored import requests
 from datetime import date
+#from fbprophet import Prophet
+#import code
 
 alpaca_symbols = {"AAVEUSD": "AAVE","ALGOUSD": "ALGO","BATUSD": "BAT","BTCUSD": "BTC","BCHUSD": "BCH","LINKUSD": "LINK","DAIUSD": "DAI","DOGEUSD": "DOGE","ETHUSD": "ETH","GRTUSD": "GRT","LTCUSD": "LTC","MKRUSD": "MKR","MATICUSD": "MATIC","NEARUSD": "NEAR","PAXGUSD": "PAXG","SHIBUSD": "SHIB","SOLUSD": "SOL","SUSHIUSD": "SUSHI","USDTUSD": "USDT","TRXUSD": "TRX","UNIUSD": "UNI","WBTCUSD": "WBTC","YFIUSD": "YFI"}
-
 symbols_to_alpaca = {"AAVE": "AAVEUSD","ALGO": "ALGOUSD","BAT": "BATUSD","BTC": "BTCUSD","BCH": "BCHUSD","LINK": "LINKUSD","DAI": "DAIUSD","DOGE": "DOGEUSD","ETH": "ETHUSD","GRT": "GRTUSD","LTC": "LTCUSD","MKR": "MKRUSD","MATIC": "MATICUSD","NEAR": "NEARUSD","PAXG": "PAXGUSD","SHIB": "SHIBUSD","SOL": "SOLUSD","SUSHI": "SUSHIUSD","USDT": "USDTUSD","TRX": "TRXUSD","UNI": "UNIUSD","WBTC": "WBTCUSD","YFI": "YFIUSD"}
-
 name_to_alpaca={"AAVE" :"AAVEUSD","ALGORAND" :"ALGOUSD","BASIC ATTENTION TOKEN" :"BATUSD","BITCOIN" :"BTCUSD","BITCOIN CASH" :"BCHUSD","CHAINLINK TOKEN" :"LINKUSD","DAI" :"DAIUSD","DOGECOIN" :"DOGEUSD","ETHEREUM" :"ETHUSD","GRAPH TOKEN" :"GRTUSD","LITECOIN" :"LTCUSD","MAKER" :"MKRUSD","MATIC" :"MATICUSD","NEAR PROTOCOL" :"NEARUSD","PAX GOLD" :"PAXGUSD","SHIBA INU" :"SHIBUSD","SOLANA" :"SOLUSD","SUSHI" :"SUSHIUSD","TETHER" :"USDTUSD","TRON" :"TRXUSD","UNISWAP PROTOCOL TOKEN" :"UNIUSD","WRAPPED BTC" :"WBTCUSD","YEARN FINANCE" :"YFIUSD"}
 
 def parse_ticker_to_alpaca(ticker):
@@ -88,8 +88,7 @@ def get_recommendation(ticker, dollars, forecast):
     future_date, future_price = get_date_and_price(alpaca_ticker, forecast)
     predicted_gains = calculate_gains(alpaca_ticker, dollars, future_price)
 
-    recommendation = """It might be a good time to buy {} on {},
-            because your {} could turn into {}""".format(ticker, future_date, dollars, predicted_gains)
+    recommendation = """It might be a good time to buy {} on {}, because your {} could turn into {}""".format(ticker, future_date, dollars, predicted_gains)
 
     return recommendation
 
@@ -240,12 +239,7 @@ def make_prediction(intent_request):
         "Fulfilled",
         {
             "contentType": "PlainText",
-            "content": """Thank you for your information;
-            in this moment, you can get {} {} for your ${} dollars.
-            {}
-            """.format(
-                ticker_value, ticker, dollars, get_recommendation(ticker, dollars_parsed, forecast_parsed)
-            ),
+            "content": f"Thank you for your information. At this time, you can get {ticker_value} {ticker} for your ${dollars} dollars. {get_recommendation(ticker, dollars_parsed, forecast_parsed)}"
         },
     )
 
@@ -274,3 +268,4 @@ def lambda_handler(event, context):
     """
 
     return dispatch(event)
+
