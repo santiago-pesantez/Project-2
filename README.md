@@ -10,6 +10,8 @@ The Crypto Bros Robo Forecaster is a publicly accessible Facebook Messenger Robo
 ## Demo
 
 ### Users may interact with the Crypto Bros Robo Forecaster via [Facebook Page](https://www.facebook.com/crypto.bros.robo.forecaster) or [Facebook Messenger](https://m.me/crypto.bros.robo.forecaster)
+![crypto_bros_robo_forecaster](https://user-images.githubusercontent.com/25112189/183313842-9996ceac-928e-4c5c-9a8c-4e8834c65379.gif)
+
 
 ---
 
